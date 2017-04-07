@@ -2,12 +2,20 @@
 #define MATRIX_H_
 
 #include <stdbool.h>
+#define M 10
+#define N 9
+#define P 12
 
 /* predefined shortcut */
 #define DECLARE_MATRIX(col, row) \
-    typedef struct { float values[col][row]; } Mat ## col ## x ## row
-DECLARE_MATRIX(3, 3);
-DECLARE_MATRIX(4, 4);
+    typedef struct { int values[col][row]; } Mat
+#if (M >= N && M >= P)
+    DECLARE_MATRIX(M, M);
+#elif (N >= M && N >= P)
+    DECLARE_MATRIX(N, N);
+#else
+    DECLARE_MATRIX(P, P);
+#endif
 
 typedef struct {
     int row, col;
@@ -15,7 +23,7 @@ typedef struct {
 } Matrix;
 
 typedef struct {
-    void (*assign)(Matrix *thiz, Mat4x4);
+    void (*assign)(Matrix *thiz, int row, int col, Mat);
     bool (*equal)(const Matrix *l, const Matrix *r);
     bool (*mul)(Matrix *dst, const Matrix *l, const Matrix *r);
 } MatrixAlgo;

@@ -1,5 +1,8 @@
 #include "matrix.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <malloc.h>
 
 MatrixAlgo *matrix_providers[] = {                                                                                                                
     &NaiveMatrixProvider,
@@ -8,38 +11,20 @@ MatrixAlgo *matrix_providers[] = {
 int main()
 {
     MatrixAlgo *algo = matrix_providers[0];
-
+    Mat data1, data2;
     Matrix dst, m, n, fixed;
-    algo->assign(&m, (Mat4x4) {
-        .values = {
-            { 1, 2, 3, 4, },
-            { 5, 6, 7, 8, },
-            { 1, 2, 3, 4, },
-            { 5, 6, 7, 8, },
-        },
-    });
 
-    algo->assign(&n, (Mat4x4) {
-        .values = {
-            { 1, 2, 3, 4, },
-            { 5, 6, 7, 8, },
-            { 1, 2, 3, 4, },
-            { 5, 6, 7, 8, },
-        },
-    });
+    srand(time(NULL));
+    for (int i = 0; i < M; ++i)
+        for (int j = 0; j < N; ++j)
+            data1.values[i][j] = rand() % 100;
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < P; ++j)
+            data2.values[i][j] = rand() % 100;
 
+    algo->assign(&m, M, N, data1);
+    algo->assign(&n, N, P, data2);
     algo->mul(&dst, &m, &n);
 
-    algo->assign(&fixed, (Mat4x4) {
-        .values = {
-            { 34,  44,  54,  64, },
-            { 82, 108, 134, 160, },
-            { 34,  44,  54,  64, },
-            { 82, 108, 134, 160, },
-        },
-    });
-
-    if (algo->equal(&dst, &fixed))
-        return 0;
-    return -1;
+    return 0;
 }
